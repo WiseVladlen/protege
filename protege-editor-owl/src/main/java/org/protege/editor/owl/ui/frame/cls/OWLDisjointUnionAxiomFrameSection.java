@@ -1,0 +1,60 @@
+package org.protege.editor.owl.ui.frame.cls;
+
+import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.ui.editor.OWLClassExpressionSetEditor;
+import org.protege.editor.owl.ui.editor.OWLObjectEditor;
+import org.protege.editor.owl.ui.frame.AbstractOWLFrameSection;
+import org.protege.editor.owl.ui.frame.OWLFrame;
+import org.protege.editor.owl.ui.frame.OWLFrameSectionRow;
+import org.semanticweb.owlapi.model.*;
+
+import java.util.Comparator;
+import java.util.Set;
+
+public class OWLDisjointUnionAxiomFrameSection extends AbstractOWLFrameSection<OWLClass, OWLDisjointUnionAxiom, Set<OWLClassExpression>> {
+	public final static String LABEL = "Disjoint Union Of";
+	
+	public OWLDisjointUnionAxiomFrameSection(OWLEditorKit editorKit, OWLFrame<OWLClass> frame) {
+		super(editorKit, LABEL, LABEL, frame);
+	}
+
+	@Override
+	protected OWLDisjointUnionAxiom createAxiom(Set<OWLClassExpression> editedObject) {
+		return getOWLDataFactory().getOWLDisjointUnionAxiom(getRootObject(), editedObject);
+	}
+	
+	@Override
+	protected void refill(OWLOntology ontology) {
+		for (OWLDisjointUnionAxiom axiom : ontology.getDisjointUnionAxioms(getRootObject())) {
+			addRow(new OWLDisjointUnionAxiomFrameSectionRow(getOWLEditorKit(), this, ontology, getRootObject(), axiom));
+		}
+	}
+
+	@Override
+	public OWLObjectEditor<Set<OWLClassExpression>> getObjectEditor() {
+        return new OWLClassExpressionSetEditor(getOWLEditorKit());
+	}
+	
+	@Override
+    public boolean checkEditorResults(OWLObjectEditor<Set<OWLClassExpression>> editor) {
+    	Set<OWLClassExpression> disjoints = editor.getEditedObject();
+    	return disjoints.size() >= 2;
+    }
+	
+    @Override
+    protected boolean isResettingChange(OWLOntologyChange change) {
+    	return change.isAxiomChange() &&
+    			change.getAxiom() instanceof OWLDisjointUnionAxiom &&
+    			((OWLDisjointUnionAxiom) change.getAxiom()).getOWLClass().equals(getRootObject());
+    }
+
+	public Comparator<OWLFrameSectionRow<OWLClass, OWLDisjointUnionAxiom, Set<OWLClassExpression>>> getRowComparator() {
+		return null;
+	}
+
+	@Override
+	protected void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+}

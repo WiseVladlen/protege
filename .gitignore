@@ -1,0 +1,25 @@
+# Maven
+target/
+
+# Eclipse
+.classpath
+.project
+.settings/
+META-INF/
+build.properties
+plugin.xml
+
+#intelliJ
+*.iws
+*.ipr
+.idea
+*.iml
+build/
+
+_site
+_views
+_posts
+_menus
+assets
+installation
+
